@@ -91,7 +91,7 @@ public abstract class JavaEngine extends JFrame implements Runnable, KeyListener
 
 	double sumUpdateTime = 0, sumRenderTime = 0, avgUpdateTime = 0, avgRenderTime = 0, time = 0;
 
-	private boolean renderStats = false;
+	protected boolean renderStats = false;
 	
 	public enum GameState {RUNNING, PAUSED};
 	
@@ -244,7 +244,7 @@ public abstract class JavaEngine extends JFrame implements Runnable, KeyListener
 		
 		g.setColor(Color.white);
 		g.setFont(font);
-		g.drawString("[ESC]", xLeft, y);
+		g.drawString("[ESC] | [F1]", xLeft, y);
 		g.drawString(getFormattedCurrentFPS(), xRight, y);
 		g.drawString(getFormattedAvgUpdateTime(), xRight, y + 20);
 		g.drawString(getFormattedAvgRenderTime(), xRight, y + 40);
