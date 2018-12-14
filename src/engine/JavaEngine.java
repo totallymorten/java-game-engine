@@ -11,6 +11,8 @@ import java.util.Locale;
 
 import javax.swing.JFrame;
 
+import engine.exception.JavaEngineException;
+
 public abstract class JavaEngine extends JFrame implements Runnable, KeyListener
 {
 
@@ -63,8 +65,15 @@ public abstract class JavaEngine extends JFrame implements Runnable, KeyListener
 
 	// implement these methods in concrete game
 	public abstract void init();
-	public abstract void render(Graphics2D g);
+	public abstract void render(Graphics2D g) throws JavaEngineException;
 	public abstract void update(double ns);
+
+	protected void handleException(Exception e)
+	{
+		System.err.println(e.getMessage());
+		e.printStackTrace();
+		running = false;
+	}
 
 	boolean running = true;
 
@@ -130,10 +139,14 @@ public abstract class JavaEngine extends JFrame implements Runnable, KeyListener
 				// rendering
 				g = (Graphics2D) buf.getDrawGraphics();
 				
-				render(g);
+				try {
+					render(g);
+				} catch (JavaEngineException e) {
+					handleException(e);
+				}
 				
 				if (renderStats)
-					renderStats(g, WIDTH / 2);
+					renderStats(g);
 
 				
 				g.dispose();
@@ -236,18 +249,17 @@ public abstract class JavaEngine extends JFrame implements Runnable, KeyListener
 	
 	Font font = new Font("Courier New",Font.BOLD,20);
 
-	public void renderStats(Graphics2D g, int xoffset)
+	public void renderStats(Graphics2D g)
 	{
 		int y = 20;
 		int xLeft = 10;
-		int xRight = WIDTH - xoffset;
 		
 		g.setColor(Color.white);
 		g.setFont(font);
 		g.drawString("[ESC] | [F1]", xLeft, y);
-		g.drawString(getFormattedCurrentFPS(), xRight, y);
-		g.drawString(getFormattedAvgUpdateTime(), xRight, y + 20);
-		g.drawString(getFormattedAvgRenderTime(), xRight, y + 40);
+		g.drawString(getFormattedCurrentFPS(), xLeft, y + 40);
+		g.drawString(getFormattedAvgUpdateTime(), xLeft, y + 60);
+		g.drawString(getFormattedAvgRenderTime(), xLeft, y + 80);
 	}
 	
 }
