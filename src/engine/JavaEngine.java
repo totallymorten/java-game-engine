@@ -91,6 +91,8 @@ public abstract class JavaEngine extends JFrame implements Runnable, KeyListener
 
 	double sumUpdateTime = 0, sumRenderTime = 0, avgUpdateTime = 0, avgRenderTime = 0, time = 0;
 
+	private boolean renderStats = false;
+	
 	public enum GameState {RUNNING, PAUSED};
 	
 	public GameState state = GameState.RUNNING;
@@ -127,7 +129,13 @@ public abstract class JavaEngine extends JFrame implements Runnable, KeyListener
 				
 				// rendering
 				g = (Graphics2D) buf.getDrawGraphics();
+				
 				render(g);
+				
+				if (renderStats)
+					renderStats(g, WIDTH / 2);
+
+				
 				g.dispose();
 				sumRenderTime += System.nanoTime() - time;
 				
@@ -199,6 +207,8 @@ public abstract class JavaEngine extends JFrame implements Runnable, KeyListener
 	{
 		if (Keys.pull(KeyEvent.VK_ESCAPE))
 			running = false;
+		else if (Keys.pull(KeyEvent.VK_F1))
+			renderStats = !renderStats;
 	}
 	
 	// hook to handle stuff while running
