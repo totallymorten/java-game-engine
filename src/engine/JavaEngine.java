@@ -218,10 +218,6 @@ public abstract class JavaEngine extends JFrame implements Runnable, KeyListener
 	
 	protected void handleKeys()
 	{
-		if (Keys.pull(KeyEvent.VK_ESCAPE))
-			running = false;
-		else if (Keys.pull(KeyEvent.VK_F1))
-			renderStats = !renderStats;
 	}
 	
 	// hook to handle stuff while running
@@ -230,6 +226,11 @@ public abstract class JavaEngine extends JFrame implements Runnable, KeyListener
 	@Override
 	public void keyPressed(KeyEvent e)
 	{
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
+			running = false;
+		else if (e.getKeyCode() == KeyEvent.VK_F1)
+			renderStats = !renderStats;		
+
 		Keys.set(e.getKeyCode());
 		Keys.setNewEvent(e);
 	}
@@ -242,9 +243,7 @@ public abstract class JavaEngine extends JFrame implements Runnable, KeyListener
 	}
 	
 	@Override
-	public void keyTyped(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void keyTyped(KeyEvent event) {
 	}
 	
 	Font font = new Font("Courier New",Font.BOLD,20);
