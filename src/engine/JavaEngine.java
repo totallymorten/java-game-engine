@@ -118,95 +118,96 @@ public abstract class JavaEngine extends JFrame implements Runnable, KeyListener
 		
 		while (running)
 		{
-			// calculating time diff
-			lastFrame = beginFrame;
-			beginFrame = System.nanoTime();
-			delta = beginFrame - lastFrame;
-
-			if (state == GameState.RUNNING)
-			{
-				// hook to handle stuff while running
-				handlePreCycle();
+			try {
 				
-				// hook for handling keys
-				handleKeys();
-				
-				// updating game elements
-				update(delta);
-				time = System.nanoTime();
-				sumUpdateTime += time - beginFrame;
-				
-				// rendering
-				g = (Graphics2D) buf.getDrawGraphics();
-				
-				try {
+				// calculating time diff
+				lastFrame = beginFrame;
+				beginFrame = System.nanoTime();
+				delta = beginFrame - lastFrame;
+	
+				if (state == GameState.RUNNING)
+				{
+					// hook to handle stuff while running
+					handlePreCycle();
+					
+					// hook for handling keys
+					handleKeys();
+					
+					// updating game elements
+					update(delta);
+					time = System.nanoTime();
+					sumUpdateTime += time - beginFrame;
+					
+					// rendering
+					g = (Graphics2D) buf.getDrawGraphics();
+					
 					render(g);
-				} catch (JavaEngineException e) {
-					handleException(e);
+					
+					if (renderStats)
+						renderStats(g);
+	
+					
+					g.dispose();
+					sumRenderTime += System.nanoTime() - time;
+					
+					// painting to screen
+					buf.show();				
 				}
 				
-				if (renderStats)
-					renderStats(g);
+				// more time calculation
+				endFrame = System.nanoTime();
+				frameTime = endFrame - beginFrame;
+				
+				// FPS calculation
+				frameCount++;
+				fpsCalcTimer -= delta;
+				fpsCountPassedTime += delta;
+				
+				idealPassedTime += nsPrFrame;
+				realPassedTime += delta;
+				
+				// show FPS avg every something seconds
+				if (fpsCalcTimer < 0)
+				{
+					fpsCalcTimer = fpsCalcTime;
+					currentFps = frameCount / (fpsCountPassedTime / oneSecNs);
+					avgUpdateTime = sumUpdateTime / frameCount / tenE6;
+					avgRenderTime = sumRenderTime / frameCount / tenE6;
+					
+					// resetting counters
+					frameCount = 0;
+					fpsCountPassedTime = 0;
+					sumRenderTime = 0;
+					sumUpdateTime = 0;
+				}
+				
+				// yield if we have some time to spend
+				if (realPassedTime < idealPassedTime)
+					Thread.yield();
+				
+				
+				// sleep if we have some time to spend
+				long diff = (long) ((idealPassedTime - realPassedTime) / tenE6);
+				if (diff > 2)
+				{
+					
+					try {
+						long sleep = diff - 1;
+						//System.out.println("sleeping for ["+sleep+"] ms ("+(nsPrFrame - frameTime) / tenE6+")");
+						//System.out.println(String.format(Locale.US,"Used ms [%10.2f] / [%10.2f]", frameTime / tenE6,nsPrFrame / tenE6));
+						//long beforeSleep = System.nanoTime();
+						Thread.sleep(sleep);
+						//System.out.println("Slept for ["+(System.nanoTime() - beforeSleep) / tenE6+"] ms");
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			
+			} catch (JavaEngineException e) {
+				handleException(e);
+			}
 
-				
-				g.dispose();
-				sumRenderTime += System.nanoTime() - time;
-				
-				// painting to screen
-				buf.show();				
-			}
-			
-			// more time calculation
-			endFrame = System.nanoTime();
-			frameTime = endFrame - beginFrame;
-			
-			// FPS calculation
-			frameCount++;
-			fpsCalcTimer -= delta;
-			fpsCountPassedTime += delta;
-			
-			idealPassedTime += nsPrFrame;
-			realPassedTime += delta;
-			
-			// show FPS avg every something seconds
-			if (fpsCalcTimer < 0)
-			{
-				fpsCalcTimer = fpsCalcTime;
-				currentFps = frameCount / (fpsCountPassedTime / oneSecNs);
-				avgUpdateTime = sumUpdateTime / frameCount / tenE6;
-				avgRenderTime = sumRenderTime / frameCount / tenE6;
-				
-				// resetting counters
-				frameCount = 0;
-				fpsCountPassedTime = 0;
-				sumRenderTime = 0;
-				sumUpdateTime = 0;
-			}
-			
-			// yield if we have some time to spend
-			if (realPassedTime < idealPassedTime)
-				Thread.yield();
-			
-			
-			// sleep if we have some time to spend
-			long diff = (long) ((idealPassedTime - realPassedTime) / tenE6);
-			if (diff > 2)
-			{
-				
-				try {
-					long sleep = diff - 1;
-					//System.out.println("sleeping for ["+sleep+"] ms ("+(nsPrFrame - frameTime) / tenE6+")");
-					//System.out.println(String.format(Locale.US,"Used ms [%10.2f] / [%10.2f]", frameTime / tenE6,nsPrFrame / tenE6));
-					//long beforeSleep = System.nanoTime();
-					Thread.sleep(sleep);
-					//System.out.println("Slept for ["+(System.nanoTime() - beforeSleep) / tenE6+"] ms");
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
-			
 		}
 		
 		preExit();
