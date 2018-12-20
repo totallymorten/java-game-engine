@@ -113,7 +113,7 @@ public class ParticleConfiguration implements Serializable
 			false		  // repeat animation
 			);
 
-	public final static ParticleConfiguration BLOOD_SPATTER1 = new ParticleConfiguration(
+	public final static ParticleConfiguration BLOOD_SPATTER_EAST = new ParticleConfiguration(
 			0.0,          // a delay before start spawning particles
 			0.1,		  // the time in which to spawn particles. -1 = infinite.
 			500.0,       // how many particles to spawn pr sec
@@ -127,8 +127,52 @@ public class ParticleConfiguration implements Serializable
 			3,           // size of the particles (rectangular)
 			false		  // repeat animation
 			);
-	
-	
+
+	public final static ParticleConfiguration BLOOD_SPATTER_WEST = new ParticleConfiguration(
+			0.0,          // a delay before start spawning particles
+			0.1,		  // the time in which to spawn particles. -1 = infinite.
+			500.0,       // how many particles to spawn pr sec
+			0.5,          // how many seconds a particle exists before removed
+			-100.0,        // the maximum x speed to spawn particles (+ = right,- = left)
+			-200.0,
+			-150,         // the maximum speed to spawn particles (+ = down,- = up)
+			150,       
+			0.0000000,    // the acceleration on x axis (gravity)
+			0.0000004,    // the acceleration on y axis (gravity)
+			3,           // size of the particles (rectangular)
+			false		  // repeat animation
+			);
+
+	public final static ParticleConfiguration BLOOD_SPATTER_NORTH = new ParticleConfiguration(
+			0.0,          // a delay before start spawning particles
+			0.1,		  // the time in which to spawn particles. -1 = infinite.
+			500.0,       // how many particles to spawn pr sec
+			0.5,          // how many seconds a particle exists before removed
+			-150.0,        // the maximum x speed to spawn particles (+ = right,- = left)
+			150.0,
+			-100,         // the maximum speed to spawn particles (+ = down,- = up)
+			-200,       
+			0.0000000,    // the acceleration on x axis (gravity)
+			0.0000004,    // the acceleration on y axis (gravity)
+			3,           // size of the particles (rectangular)
+			false		  // repeat animation
+			);
+
+	public final static ParticleConfiguration BLOOD_SPATTER_SOUTH = new ParticleConfiguration(
+			0.0,          // a delay before start spawning particles
+			0.1,		  // the time in which to spawn particles. -1 = infinite.
+			500.0,       // how many particles to spawn pr sec
+			0.5,          // how many seconds a particle exists before removed
+			-150.0,        // the maximum x speed to spawn particles (+ = right,- = left)
+			150.0,
+			100,         // the maximum speed to spawn particles (+ = down,- = up)
+			200,       
+			0.0000000,    // the acceleration on x axis (gravity)
+			0.0000004,    // the acceleration on y axis (gravity)
+			3,           // size of the particles (rectangular)
+			false		  // repeat animation
+			);
+
 	/**
 		// ***** CONFIGURATION BEGIN ****** //
 		
