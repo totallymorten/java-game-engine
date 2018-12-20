@@ -1,7 +1,14 @@
 package particle;
 
-public class ParticleConfiguration 
+import java.io.Serializable;
+
+public class ParticleConfiguration implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7497116673320238811L;
+	
 	// a delay before start spawning particles
 	public double delaySec;
 	// the time in which to spawn particles. -1 = infinite.
@@ -28,11 +35,16 @@ public class ParticleConfiguration
 	// size of the particles (rectangular)
 	public int partSize;
 
+	// repeat particle generation if 0 count (and if not infinite)
+	public boolean repeat = false;
+	
+	
 	public ParticleConfiguration(double delaySec, double maxGenerationTimeSec,
 			double spawnPrSec, double lifeSecs, double maxSpeedXPrSec,
 			double minSpeedXPrSec, double maxSpeedYPrSec,
 			double minSpeedYPrSec, double accXPrSec, double accYPrSec,
-			int partSize) 
+			int partSize,
+			boolean repeat) 
 	{
 		this.delaySec = delaySec;
 		this.maxGenerationTimeSec = maxGenerationTimeSec;
@@ -45,11 +57,12 @@ public class ParticleConfiguration
 		this.accXPrSec = accXPrSec;
 		this.accYPrSec = accYPrSec;
 		this.partSize = partSize;
+		this.repeat = repeat;
 	}
 
 
 
-	public final static ParticleConfiguration CONF1 = new ParticleConfiguration(1.0,-1,500.0,14.0,0.0,-400.0,50.0,-50.0,0.0000001,0.0,10);
+	public final static ParticleConfiguration CONF1 = new ParticleConfiguration(1.0,-1,500.0,14.0,0.0,-400.0,50.0,-50.0,0.0000001,0.0,10, false);
 	
 	public final static ParticleConfiguration SPRAY = new ParticleConfiguration(
 																				1.0,          // a delay before start spawning particles
@@ -62,7 +75,8 @@ public class ParticleConfiguration
 																				-50.0,       
 																				0.0000000,    // the acceleration on x axis (gravity)
 																				0.0000001,    // the acceleration on y axis (gravity)
-																				2             // size of the particles (rectangular)
+																				2,            // size of the particles (rectangular)
+																				false		  // repeat animation
 																				);
 
 	
@@ -79,7 +93,8 @@ public class ParticleConfiguration
 			-100.0,       
 			0.0000000,    // the acceleration on x axis (gravity)
 			0.0000000,    // the acceleration on y axis (gravity)
-			20             // size of the particles (rectangular)
+			20,            // size of the particles (rectangular)
+			false		  // repeat animation
 	);
 	
 	
@@ -94,9 +109,24 @@ public class ParticleConfiguration
 			-500.0,       
 			0.0000000,    // the acceleration on x axis (gravity)
 			0.0000001,    // the acceleration on y axis (gravity)
-			2             // size of the particles (rectangular)
+			2,            // size of the particles (rectangular)
+			false		  // repeat animation
 			);
 
+	public final static ParticleConfiguration BLOOD_SPATTER1 = new ParticleConfiguration(
+			0.0,          // a delay before start spawning particles
+			0.1,		  // the time in which to spawn particles. -1 = infinite.
+			500.0,       // how many particles to spawn pr sec
+			0.5,          // how many seconds a particle exists before removed
+			100.0,        // the maximum x speed to spawn particles (+ = right,- = left)
+			200.0,
+			-150,         // the maximum speed to spawn particles (+ = down,- = up)
+			150,       
+			0.0000000,    // the acceleration on x axis (gravity)
+			0.0000004,    // the acceleration on y axis (gravity)
+			3,           // size of the particles (rectangular)
+			false		  // repeat animation
+			);
 	
 	
 	/**

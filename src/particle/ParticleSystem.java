@@ -2,16 +2,25 @@ package particle;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.io.Serializable;
 import java.util.Random;
 
 import engine.exception.JavaEngineException;
 
-public class ParticleSystem 
+public class ParticleSystem implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3993239775591132673L;
+
 	ColorMethod colorMethod;
 	
 	public boolean generate = true;
 
+	public boolean finished = false;
+	
 	final double NSPRSEC = Math.pow(10, 9);
 	long spawnIntervalNs; // pr sec.
 	double[] random; // used for generating new random things
@@ -51,7 +60,7 @@ public class ParticleSystem
 
 	public ParticleSystem(int amount, int x, int y, ParticleConfiguration conf, Color color)
 	{
-		colorMethod = ColorMethod.COLOR_RANDOM;
+		colorMethod = ColorMethod.COLOR_FIXED;
 		
 		this.conf = conf;
 		
@@ -132,8 +141,8 @@ public class ParticleSystem
 	
 	private void initArrs(int i)
 	{
-			xpos[i] = x;
-			ypos[i] = y;
+			xpos[i] = 0;
+			ypos[i] = 0;
 			speedx[i] = getSpeedX();
 			speedy[i] = getSpeedY();
 			currentLifeNs[i] = lifeNs;
@@ -141,6 +150,9 @@ public class ParticleSystem
 	
 	public void update(double ns)
 	{
+		if (finished)
+			return;
+		
 		if (delayNs > 0)
 		{
 			delayNs -= ns;
@@ -163,6 +175,8 @@ public class ParticleSystem
 			// life update
 			currentLifeNs[i] -= ns;
 			
+			// remove one particle from array.
+			// move last particle to current pos and decrease count
 			if (currentLifeNs[i] < 0)
 			{
 				xpos[i] = xpos[count-1];
@@ -204,13 +218,29 @@ public class ParticleSystem
 			}
 			
 		}
+		// handle repeat
+		else
+		{
+			if (conf.repeat && count <= 0)
+			{
+				init(); // reset count and spawning
+			}
+			else if (!conf.repeat && count <= 0)
+				finished = true;
+		}
 		
 	}
 	
-	public void render(Graphics2D g) throws JavaEngineException
+	public void render(Graphics2D g, Point renderOffSet) throws JavaEngineException
 	{
-		int x;
-		int y;
+		if (renderOffSet == null)
+			renderOffSet = new Point(0,0);
+		
+		if (finished)
+			return;
+		
+		int particleX;
+		int particleY;
 		int colorChoice;
 		for (int i = 0; i < count; i++)
 		{
@@ -226,9 +256,9 @@ public class ParticleSystem
 					throw new JavaEngineException("Color method not handled ["+colorMethod+"]");
 					
 				g.setColor(cols[colorChoice]);
-				x = (int)(xpos[i]);
-				y = (int)(ypos[i]);
-				g.fillRect(x, y, conf.partSize, conf.partSize);				
+				particleX = (int)(xpos[i]);
+				particleY = (int)(ypos[i]);
+				g.fillRect(x + particleX - renderOffSet.x, y + particleY - renderOffSet.y, conf.partSize, conf.partSize);				
 			}
 		}		
 	}
