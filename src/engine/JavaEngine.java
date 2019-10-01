@@ -26,7 +26,17 @@ public abstract class JavaEngine extends JFrame implements Runnable, KeyListener
 	public double FPS; // the wanted FPS. If want max (benchmark), set to something like 10000.0
 	public double nsPrFrame; 
 	
-	public JavaEngine (int width, int height, double fps)
+	public JavaEngine(int width, int height, double fps)
+	{
+		construct(0, 0, width, height, fps);
+	}
+	
+	public JavaEngine (int xPosition, int yPosition, int width, int height, double fps)
+	{
+		construct(xPosition, yPosition, width, height, fps);
+	}
+	
+	private void construct(int xPosition, int yPosition, int width, int height, double fps)
 	{
 		JavaEngine.WIDTH = width;
 		JavaEngine.HEIGHT = height;
@@ -36,7 +46,7 @@ public abstract class JavaEngine extends JFrame implements Runnable, KeyListener
 		addKeyListener(this);
 		setPreferredSize(new Dimension(WIDTH,HEIGHT));
 		setIgnoreRepaint(true);
-		setLocation(0, 0);
+		setLocation(xPosition, yPosition);
 		setResizable(false);
 		setUndecorated(true);
 		//setAlwaysOnTop(true);
@@ -44,9 +54,8 @@ public abstract class JavaEngine extends JFrame implements Runnable, KeyListener
 		pack();
 		setVisible(true);
 		
-		init();
+		init();		
 	}
-	
 	
 	public String getFormattedCurrentFPS()
 	{
